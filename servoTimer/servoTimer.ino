@@ -27,7 +27,7 @@ void initWifi()
     while (WiFi.status() != WL_CONNECTED)
     {
       Serial.print('.');
-      delay(1000);
+      delay(500);
     }
   Serial.println(WiFi.localIP());
 }
@@ -48,13 +48,19 @@ void loop()
     struct tm timeinfo = rtc.getTimeStruct();
     short hour = timeinfo.tm_hour;
     short minute = timeinfo.tm_min;
-    
+    short day = timeinfo.tm_wday;
+
+    Serial.println(day);
     if (hour == 7 && minute == 45 && timeinterval==false)
       {
-        myServo.write(40);
-        delay(2000);
-        myServo.write(0);
-        timeinterval=true;
+        if(day != 6 && day != 0)
+        {
+          myServo.write(40);
+          delay(2000);
+          myServo.write(0);
+          timeinterval=true;
+        }
+        
       }
     else
       {
@@ -62,16 +68,5 @@ void loop()
         delay(60000);
         timeinterval=false;
       }
-      //for debugging
-    // if (Serial.available() > 0) 
-    // {
-    //     int angle = Serial.parseInt(); // Read the angle from the serial monitor
-    //     if (angle >= 0 && angle <= 180) {
-    //         myServo.write(angle); // Set the servo to the specified angle
-    //         Serial.print("Servo angle set to: ");
-    //         Serial.println(angle);
-    //     } else {
-    //         Serial.println("Invalid angle. Please enter a value between 0 and 180.");
-    //     }
-    // }
+    
 }
